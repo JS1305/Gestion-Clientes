@@ -1,0 +1,155 @@
+package org.example;
+
+import org.example.controllers.ClienteController;
+import org.example.entitis.Cliente;
+
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    private List<Cliente> clienteList;
+    private Cliente cliente;
+    void main() {
+        ClienteController clienteController = new ClienteController();
+        Scanner input = new Scanner(System.in);
+        this.cliente = new Cliente();
+        int opt;
+        while (true) {
+            mostrarMenu();
+            opt = input.nextInt();
+            input.nextLine();
+            switch (opt) {
+                case 0:
+                    optionExit();
+                    return;
+                case 1:
+                    optionCreateCliente(clienteController, input);
+                    break;
+                case 2:
+                    optionPrintClientList(clienteController);
+                    break;
+                case 3:
+                    optionUpdateClient(clienteController, input);
+                    break;
+                case 4:
+                    optionDeleteClient(clienteController, input);
+                    break;
+                case 5:
+                    optionFindClientByCity(clienteController, input);
+                    break;
+                default:
+                    System.out.println("Operación no valida");
+                    break;
+            }
+        }
+
+    }
+
+    private void optionFindClientByCity(ClienteController clienteController, Scanner input) {
+        System.out.println("Ingrese la ciudad a buscar");
+        String ciudad = input.nextLine();
+
+        List<Cliente> clientesByCity = clienteController.findClienteByCity(ciudad);
+
+        if (!clientesByCity.isEmpty()) {
+            for (Cliente cliente : clientesByCity) {
+                System.out.println(cliente);
+            }
+        } else {
+            System.out.println("\nNingún cliente registrado en esa ciudad");
+            System.out.println("-------------------------------------------");
+        }
+    }
+
+    private void optionDeleteClient(ClienteController clienteController, Scanner input) {
+        optionPrintClientList(clienteController);
+        System.out.println("Ingrese el numero del cliente a eliminar");
+
+        int clientPosition = input.nextInt();
+
+        if (clientPosition < 0 || clientPosition > clienteList.size()) {
+            System.out.println("Posición no valida");
+            return;
+        }
+
+        Cliente clienteToDelete = clienteList.get(clientPosition - 1);
+        clienteController.eliminarCliente(clienteToDelete);
+        System.out.println("\nCliente eliminado satisfactoriamente !");
+        System.out.println("-------------------------------------------");
+    }
+
+    private void optionUpdateClient(ClienteController clienteController, Scanner input) {
+        optionPrintClientList(clienteController);
+        System.out.println("Ingrese el numero del cliente a actualizar");
+        int clientPosition = input.nextInt();
+
+        if (clientPosition < 0 || clientPosition > clienteList.size()) {
+            System.out.println("Posición no valida");
+            return;
+        }
+        Cliente clienteToUpdate = clienteList.get(clientPosition - 1);
+
+        formClient(clienteToUpdate, input);
+
+        clienteController.modifyCliente(clienteToUpdate);
+        System.out.println("\nCliente actualizado satisfactoriamente !");
+        System.out.println("-------------------------------------------");
+    }
+
+    private void formClient(Cliente cliente, Scanner input) {
+        System.out.println("Ingrese nombre");
+        cliente.setNombre(input.nextLine());
+        System.out.println("Ingrese Apellidos");
+        cliente.setApellidos(input.nextLine());
+        System.out.println("Ingrese sexo");
+        cliente.setSexo(input.nextLine());
+        System.out.println("Ingrese su ciudad");
+        cliente.setCiudad(input.nextLine());
+        System.out.println("Ingrese fecha de nacimiento");
+        cliente.setFecha(input.nextLine());
+        System.out.println("Ingrese numero de telefono");
+        cliente.setTelefono(input.nextLine());
+        System.out.println("Ingrese correro electronico");
+        cliente.setCorreo(input.nextLine());
+    }
+
+    private void optionPrintClientList(ClienteController clienteController) {
+        clienteList = clienteController.listarCliente();
+        if (!clienteList.isEmpty()) {
+            for (int i = 0; i < clienteList.size(); i++) {
+                Cliente cliente = clienteList.get(i);
+                System.out.println((i + 1) + " - " + cliente);
+            }
+        } else {
+            System.out.println("\nNingún cliente registrado");
+            System.out.println("-------------------------------------------");
+        }
+    }
+
+    private void optionCreateCliente(ClienteController clienteController, Scanner input) {
+        formClient(this.cliente, input);
+
+        clienteController.crearCliente(this.cliente);
+
+        this.cliente = new Cliente();
+        System.out.println("\nCliente creado satisfactoriamente !");
+        System.out.println("-------------------------------------------");
+    }
+
+    private static void mostrarMenu() {
+        System.out.println("\nBienvenido al gestor de clientes !");
+        System.out.println("\nCual de las siguientes operaciones deseas ejecutar ");
+        System.out.println("0 - Salir");
+        System.out.println("1 - Agregar nuevo cliente");
+        System.out.println("2 - Listado de clientes");
+        System.out.println("3 - Actualizar informacion de un cliente");
+        System.out.println("4 - Eliminar cliente");
+        System.out.println("5 - Busqueda de cliente por ciudad");
+    }
+
+    private void optionExit(){
+        System.out.println("¡Adiós!");
+    }
+}
+
+
