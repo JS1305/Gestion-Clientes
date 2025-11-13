@@ -46,7 +46,7 @@ public class Main {
                         break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Por favor, ingrese un número válido.");
+                System.out.println("Por favor, ingrese un número válido. Intentelo nuevamente");
                 input.nextLine();
             }
         }
@@ -78,11 +78,11 @@ public class Main {
             System.out.println("Posición no valida");
             return;
         }
-
-        Cliente clienteToDelete = clienteList.get(clientPosition - 1);
-        clienteController.eliminarCliente(clienteToDelete);
-        System.out.println("\nCliente eliminado satisfactoriamente !");
-        System.out.println("-------------------------------------------");
+        try {
+            Cliente clienteToDelete = clienteList.get(clientPosition - 1);
+            clienteController.eliminarCliente(clienteToDelete);
+            System.out.println("\nCliente eliminado satisfactoriamente !");
+        } catch (Exception e){}
     }
 
     private void optionUpdateClient(ClienteController clienteController, Scanner input) {
@@ -109,7 +109,12 @@ public class Main {
         System.out.println("Ingrese Apellidos");
         cliente.setApellidos(input.nextLine());
         System.out.println("Ingrese sexo MASCULINO/FEMENINO ");
-        cliente.setSexo(Cliente.Sexo.valueOf(input.nextLine()));
+        try {
+            cliente.setSexo(Cliente.Sexo.valueOf(input.nextLine().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Valor inválido. Por defecto se asignará MASCULINO.");
+            cliente.setSexo(Cliente.Sexo.MASCULINO);
+        }
         System.out.println("Ingrese su ciudad");
         cliente.setCiudad(input.nextLine());
         System.out.println("Ingrese fecha de nacimiento");
