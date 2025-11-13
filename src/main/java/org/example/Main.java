@@ -3,6 +3,7 @@ package org.example;
 import org.example.controllers.ClienteController;
 import org.example.entitis.Cliente;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,35 +15,41 @@ public class Main {
         Scanner input = new Scanner(System.in);
         this.cliente = new Cliente();
         int opt;
+
         while (true) {
-            mostrarMenu();
-            opt = input.nextInt();
-            input.nextLine();
-            switch (opt) {
-                case 0:
-                    optionExit();
-                    return;
-                case 1:
-                    optionCreateCliente(clienteController, input);
-                    break;
-                case 2:
-                    optionPrintClientList(clienteController);
-                    break;
-                case 3:
-                    optionUpdateClient(clienteController, input);
-                    break;
-                case 4:
-                    optionDeleteClient(clienteController, input);
-                    break;
-                case 5:
-                    optionFindClientByCity(clienteController, input);
-                    break;
-                default:
-                    System.out.println("Operación no valida");
-                    break;
+            try {
+                mostrarMenu();
+                opt = input.nextInt();
+                input.nextLine();
+
+                switch (opt) {
+                    case 0:
+                        optionExit();
+                        return;
+                    case 1:
+                        optionCreateCliente(clienteController, input);
+                        break;
+                    case 2:
+                        optionPrintClientList(clienteController);
+                        break;
+                    case 3:
+                        optionUpdateClient(clienteController, input);
+                        break;
+                    case 4:
+                        optionDeleteClient(clienteController, input);
+                        break;
+                    case 5:
+                        optionFindClientByCity(clienteController, input);
+                        break;
+                    default:
+                        System.out.println("Operación no valida");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, ingrese un número válido.");
+                input.nextLine();
             }
         }
-
     }
 
     private void optionFindClientByCity(ClienteController clienteController, Scanner input) {
@@ -101,8 +108,8 @@ public class Main {
         cliente.setNombre(input.nextLine());
         System.out.println("Ingrese Apellidos");
         cliente.setApellidos(input.nextLine());
-        System.out.println("Ingrese sexo");
-        cliente.setSexo(input.nextLine());
+        System.out.println("Ingrese sexo MASCULINO/FEMENINO ");
+        cliente.setSexo(Cliente.Sexo.valueOf(input.nextLine()));
         System.out.println("Ingrese su ciudad");
         cliente.setCiudad(input.nextLine());
         System.out.println("Ingrese fecha de nacimiento");

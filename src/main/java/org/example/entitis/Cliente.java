@@ -16,7 +16,7 @@ public class Cliente {
     private String apellidos;
 
     @Column(nullable = false,length = 10)
-    private String sexo;
+    private Sexo sexo;
 
     @Column(nullable = false,length = 50)
     private String ciudad;
@@ -34,7 +34,7 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(String nombre, String apellidos, String sexo, String ciudad, String fecha, String telefono, String correo) {
+    public Cliente(String nombre, String apellidos, Sexo sexo, String ciudad, String fecha, String telefono, String correo) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.sexo = sexo;
@@ -64,11 +64,11 @@ public class Cliente {
         this.apellidos = apellidos;
     }
 
-    public String getSexo() {
+    public Sexo getSexo() {
         return sexo;
     }
 
-    public void setSexo(String sexo) {
+    public void setSexo(Sexo sexo) {
         this.sexo = sexo;
     }
 
@@ -116,5 +116,11 @@ public class Cliente {
                 ", telefono='" + telefono + '\'' +
                 ", correo='" + correo + '\'' +
                 ']';
+    }
+
+
+    public enum Sexo {
+        MASCULINO,
+        FEMENINO
     }
 }
