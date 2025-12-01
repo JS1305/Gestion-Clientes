@@ -5,6 +5,7 @@ import jakarta.persistence.TypedQuery;
 import org.example.entitis.Cliente;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class ClienteJPA {
     private ConfiJPA confiJPA;
@@ -20,6 +21,7 @@ public class ClienteJPA {
             em.getTransaction().commit();
         }
     }
+
 
     public List<Cliente> listarCliente() {
 
@@ -45,6 +47,8 @@ public class ClienteJPA {
             em.getTransaction().commit();
         }
     }
+
+
 
     public List<Cliente> findClientListByCity(String ciudad) {
         List<Cliente> clientes = null;

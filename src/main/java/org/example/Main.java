@@ -104,6 +104,8 @@ public class Main {
     }
 
     private void formClient(Cliente cliente, Scanner input) {
+
+        /*
         System.out.println("Ingrese nombre");
         cliente.setNombre(input.nextLine());
         System.out.println("Ingrese Apellidos");
@@ -124,6 +126,48 @@ public class Main {
         System.out.println("Ingrese correro electronico");
         cliente.setCorreo(input.nextLine());
     }
+         */
+        cliente.setNombre(inputObligatorio("Ingrese nombre: ", input));
+
+        cliente.setApellidos(inputObligatorio("Ingrese apellidos: ", input));
+
+        cliente.setSexo(inputSexo("Ingrese sexo (MASCULINO/FEMENINO): ", input));
+
+        cliente.setCiudad(inputObligatorio("Ingrese su ciudad: ", input));
+
+        cliente.setFecha(inputObligatorio("Ingrese fecha de nacimiento: ", input));
+
+        cliente.setTelefono(inputObligatorio("Ingrese número de teléfono: ", input));
+
+        cliente.setCorreo(inputObligatorio("Ingrese correo electrónico: ", input));
+    }
+
+    private String inputObligatorio(String mensaje, Scanner input) {
+        String valor;
+        do {
+            System.out.println(mensaje);
+            valor = input.nextLine().trim();
+
+            if (valor.isEmpty()) {
+                System.out.println("❌ Este campo es obligatorio. Inténtelo de nuevo.");
+            }
+        } while (valor.isEmpty());
+        return valor;
+    }
+
+    private Cliente.Sexo inputSexo(String mensaje, Scanner input) {
+        while (true) {
+            System.out.println(mensaje);
+            String entrada = input.nextLine().trim().toUpperCase();
+
+            try {
+                return Cliente.Sexo.valueOf(entrada);
+            } catch (IllegalArgumentException e) {
+                System.out.println("❌ Valor inválido. Debe ingresar MASCULINO o FEMENINO.");
+            }
+        }
+    }
+
 
     private void optionPrintClientList(ClienteController clienteController) {
         clienteList = clienteController.listarCliente();
@@ -139,11 +183,13 @@ public class Main {
     }
 
     private void optionCreateCliente(ClienteController clienteController, Scanner input) {
-        formClient(this.cliente, input);
 
-        clienteController.crearCliente(this.cliente);
+        Cliente nuevoCliente = new Cliente();  // <--- se crea uno nuevo siempre
 
-        this.cliente = new Cliente();
+        formClient(nuevoCliente, input);
+
+        clienteController.crearCliente(nuevoCliente);
+
         System.out.println("\nCliente creado satisfactoriamente !");
         System.out.println("-------------------------------------------");
     }
