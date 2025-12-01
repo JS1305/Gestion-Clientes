@@ -50,6 +50,9 @@ public class ClienteJPA {
 
 
 
+
+
+
     public List<Cliente> findClientListByCity(String ciudad) {
         List<Cliente> clientes = null;
 

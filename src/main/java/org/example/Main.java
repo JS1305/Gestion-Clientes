@@ -70,76 +70,92 @@ public class Main {
 
     private void optionDeleteClient(ClienteController clienteController, Scanner input) {
         optionPrintClientList(clienteController);
-        System.out.println("Ingrese el numero del cliente a eliminar");
 
-        int clientPosition = input.nextInt();
+        System.out.println("Ingrese el número del cliente a eliminar:");
+        int pos = input.nextInt();
+        input.nextLine();
 
-        if (clientPosition < 0 || clientPosition > clienteList.size()) {
-            System.out.println("Posición no valida");
+        if (pos < 1 || pos > clienteList.size()) {
+            System.out.println("❌ Posición no válida.");
             return;
         }
-        try {
-            Cliente clienteToDelete = clienteList.get(clientPosition - 1);
-            clienteController.eliminarCliente(clienteToDelete);
-            System.out.println("\nCliente eliminado satisfactoriamente !");
-        } catch (Exception e){}
+
+        Cliente cliente = clienteList.get(pos - 1);
+
+        System.out.println("¿Está seguro de eliminar a: " + cliente.getNombre() + " " + cliente.getApellidos() + "? (S/N)");
+        String confirm = input.nextLine().trim().toUpperCase();
+
+        if (!confirm.equals("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        clienteController.eliminarCliente(cliente);
+        System.out.println("✔ Cliente eliminado.");
+    }
+
+    private void updateClientForm(Cliente cliente, Scanner input) {
+
+        cliente.setNombre(inputEditable("Nombre", cliente.getNombre(), input));
+
+        cliente.setApellidos(inputEditable("Apellidos", cliente.getApellidos(), input));
+
+        System.out.println("Sexo actual: " + cliente.getSexo());
+        System.out.println("Nuevo sexo (MASCULINO/FEMENINO) — ENTER para mantener:");
+        String entradaSexo = input.nextLine().trim();
+        if (!entradaSexo.isEmpty()) {
+            try {
+                cliente.setSexo(Cliente.Sexo.valueOf(entradaSexo.toUpperCase()));
+            } catch (Exception e) {
+                System.out.println("Valor inválido. Se mantiene el actual.");
+            }
+        }
+
+        cliente.setCiudad(inputEditable("Ciudad", cliente.getCiudad(), input));
+
+        cliente.setFecha(inputEditable("Fecha (DD/MM/AAAA)", cliente.getFecha(), input));
+
+        cliente.setTelefono(inputEditable("Teléfono", cliente.getTelefono(), input));
+
+        cliente.setCorreo(inputEditable("Correo", cliente.getCorreo(), input));
     }
 
     private void optionUpdateClient(ClienteController clienteController, Scanner input) {
-        optionPrintClientList(clienteController);
-        System.out.println("Ingrese el numero del cliente a actualizar");
-        int clientPosition = input.nextInt();
 
-        if (clientPosition < 0 || clientPosition > clienteList.size()) {
-            System.out.println("Posición no valida");
+        optionPrintClientList(clienteController);
+        System.out.println("Ingrese el número del cliente a actualizar:");
+        int clientPosition = input.nextInt();
+        input.nextLine();
+
+        if (clientPosition < 1 || clientPosition > clienteList.size()) {
+            System.out.println("❌ Posición no válida");
             return;
         }
+
         Cliente clienteToUpdate = clienteList.get(clientPosition - 1);
 
-        formClient(clienteToUpdate, input);
+        updateClientForm(clienteToUpdate, input);
 
         clienteController.modifyCliente(clienteToUpdate);
-        System.out.println("\nCliente actualizado satisfactoriamente !");
-        System.out.println("-------------------------------------------");
+
+        System.out.println("✔ Cliente actualizado satisfactoriamente");
     }
 
     private void formClient(Cliente cliente, Scanner input) {
 
-        /*
-        System.out.println("Ingrese nombre");
-        cliente.setNombre(input.nextLine());
-        System.out.println("Ingrese Apellidos");
-        cliente.setApellidos(input.nextLine());
-        System.out.println("Ingrese sexo MASCULINO/FEMENINO ");
-        try {
-            cliente.setSexo(Cliente.Sexo.valueOf(input.nextLine().toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Valor inválido. Por defecto se asignará MASCULINO.");
-            cliente.setSexo(Cliente.Sexo.MASCULINO);
-        }
-        System.out.println("Ingrese su ciudad");
-        cliente.setCiudad(input.nextLine());
-        System.out.println("Ingrese fecha de nacimiento");
-        cliente.setFecha(input.nextLine());
-        System.out.println("Ingrese numero de telefono");
-        cliente.setTelefono(input.nextLine());
-        System.out.println("Ingrese correro electronico");
-        cliente.setCorreo(input.nextLine());
-    }
-         */
-        cliente.setNombre(inputObligatorio("Ingrese nombre: ", input));
+        cliente.setNombre(inputObligatorio("Ingrese nombre:", input));
 
-        cliente.setApellidos(inputObligatorio("Ingrese apellidos: ", input));
+        cliente.setApellidos(inputObligatorio("Ingrese apellidos:", input));
 
-        cliente.setSexo(inputSexo("Ingrese sexo (MASCULINO/FEMENINO): ", input));
+        cliente.setSexo(inputSexo("Ingrese sexo (MASCULINO/FEMENINO):", input));
 
-        cliente.setCiudad(inputObligatorio("Ingrese su ciudad: ", input));
+        cliente.setCiudad(inputObligatorio("Ingrese ciudad:", input));
 
-        cliente.setFecha(inputObligatorio("Ingrese fecha de nacimiento: ", input));
+        cliente.setFecha(inputFecha("Ingrese fecha de nacimiento (DD/MM/AAAA):", input));
 
-        cliente.setTelefono(inputObligatorio("Ingrese número de teléfono: ", input));
+        cliente.setTelefono(inputTelefono("Ingrese número de teléfono:", input));
 
-        cliente.setCorreo(inputObligatorio("Ingrese correo electrónico: ", input));
+        cliente.setCorreo(inputEmail("Ingrese correo electrónico:", input));
     }
 
     private String inputObligatorio(String mensaje, Scanner input) {
@@ -205,9 +221,70 @@ public class Main {
         System.out.println("5 - Busqueda de cliente por ciudad");
     }
 
+    private String inputEmail(String mensaje, Scanner input) {
+        String email;
+        String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+
+        do {
+            System.out.println(mensaje);
+            email = input.nextLine().trim();
+
+            if (!email.matches(regex)) {
+                System.out.println("❌ Email inválido. Ejemplo válido: ejemplo@correo.com");
+                email = "";
+            }
+
+        } while (email.isEmpty());
+
+        return email;
+    }
+
+    private String inputTelefono(String mensaje, Scanner input) {
+        String tel;
+        String regex = "^[0-9]{7,13}$"; // ajustable
+
+        do {
+            System.out.println(mensaje);
+            tel = input.nextLine().trim();
+
+            if (!tel.matches(regex)) {
+                System.out.println("❌ Teléfono inválido. Use solo números (7-13 dígitos).");
+                tel = "";
+            }
+        } while (tel.isEmpty());
+        return tel;
+    }
+
+    private String inputFecha(String mensaje, Scanner input) {
+        String fecha;
+        String regex = "^\\d{2}/\\d{2}/\\d{4}$";
+
+        do {
+            System.out.println(mensaje);
+            fecha = input.nextLine().trim();
+
+            if (!fecha.matches(regex)) {
+                System.out.println("❌ Fecha inválida. Formato correcto: DD/MM/AAAA");
+                fecha = "";
+            }
+
+        } while (fecha.isEmpty());
+
+        return fecha;
+    }
+
+    private String inputEditable(String mensaje, String valorActual, Scanner input) {
+        System.out.println(mensaje + " (actual: " + valorActual + ") — ENTER para mantener:");
+        String nuevoValor = input.nextLine().trim();
+
+        return nuevoValor.isEmpty() ? valorActual : nuevoValor;
+    }
+
     private void optionExit(){
         System.out.println("¡Adiós!");
     }
 }
+
+
 
 
