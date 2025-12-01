@@ -2,7 +2,7 @@
 
 ---
 
-## Section 1: Spanish
+##  Sección 1: Español
 
 ### Descripción
 Este proyecto es una **aplicación de gestión de clientes**, desarrollada en **Java**, que permite realizar operaciones de **crear, listar, actualizar, eliminar y buscar clientes** utilizando **JPA y Hibernate** para la persistencia en base de datos.
@@ -29,10 +29,12 @@ El proyecto incluye:
 ### Ejecución
 1. Clonar o descargar el repositorio:
 
+   https://github.com/JS1305/Gestion-Clientes
+
 # Client Management - Java Technical Project
 
 ---
-## Sección 2: English
+## Section 2: English
 
 
 ### Description
